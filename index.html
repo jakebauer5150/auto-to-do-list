@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>Next Up — Coursework &amp; Tasks</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#main" aria-label="Next Up home">
+          <span class="brand-mark" aria-hidden="true">N</span>
+          <span>next up<span class="brand-period">.</span></span>
+        </a>
+        <div class="storage-note"><span class="storage-dot" aria-hidden="true"></span>Saved on this device</div>
+      </header>
+
+      <main id="main">
+        <section class="welcome" aria-labelledby="page-title">
+          <div class="welcome-copy">
+            <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+            <h1 id="page-title">A little clarity<br>for what’s <span>next.</span></h1>
+            <p class="welcome-text">One calm place for the things you need to get done.</p>
+          </div>
+          <div class="date-card" aria-label="Today">
+            <span class="date-label">TODAY</span>
+            <strong id="today-date">—</strong>
+            <span class="date-caption">One step at a time.</span>
+          </div>
+        </section>
+
+        <section class="task-section" aria-labelledby="tasks-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR TASKS</p>
+              <h2 id="tasks-heading">The list</h2>
+            </div>
+            <div class="task-summary" id="task-summary" aria-live="polite"></div>
+          </div>
+
+          <form class="quick-add" id="quick-add-form">
+            <div class="form-heading">
+              <h3>Add a task</h3>
+              <span>Make a little room for what’s next.</span>
+            </div>
+            <div class="form-fields">
+              <label class="field title-field">
+                <span>Task</span>
+                <input id="task-title-input" name="title" type="text" maxlength="160" placeholder="e.g. Review lecture notes" autocomplete="off" required>
+              </label>
+              <label class="field date-field">
+                <span>Due date</span>
+                <input id="task-due-input" name="dueDate" type="date" required>
+              </label>
+              <label class="field estimate-field">
+                <span>Estimate <em>optional</em></span>
+                <input id="task-estimate-input" name="estimatedMinutes" type="number" min="1" max="10080" step="1" placeholder="Min">
+              </label>
+              <button class="add-button" type="submit"><span aria-hidden="true">＋</span> Add task</button>
+            </div>
+            <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+          </form>
+
+          <section class="canvas-import" aria-labelledby="canvas-heading">
+            <div class="import-heading">
+              <div>
+                <p class="eyebrow">BRING IN COURSEWORK</p>
+                <h3 id="canvas-heading">Import from Canvas</h3>
+              </div>
+              <span class="local-import-label"><span aria-hidden="true">↳</span> Paste only · no account connection</span>
+            </div>
+            <p class="import-instructions">Copy the text from your Canvas dashboard and paste it here. Review the titles and dates before importing. Dated Assignment and Page entries are recognized; submitted or status-only rows are skipped.</p>
+            <label class="sr-only" for="canvas-text">Copied Canvas dashboard text</label>
+            <textarea id="canvas-text" rows="5" placeholder="Paste Canvas dashboard text here…"></textarea>
+            <div class="import-actions">
+              <p class="import-feedback" id="import-feedback" role="status" aria-live="polite"></p>
+              <button class="parse-button" id="parse-canvas" type="button">Find assignments</button>
+            </div>
+
+            <section class="review-panel" id="review-panel" aria-labelledby="review-heading" hidden>
+              <div class="review-heading">
+                <div>
+                  <h4 id="review-heading">Review before importing</h4>
+                  <p id="review-summary"></p>
+                </div>
+                <button class="text-button" id="cancel-review" type="button">Clear review</button>
+              </div>
+              <p class="duplicate-help">Possible duplicates are unchecked. Check one only if you want to add it again. You can edit any title, course, or date.</p>
+              <div class="review-list" id="review-list"></div>
+              <div class="review-actions">
+                <p class="review-feedback" id="review-feedback" role="status" aria-live="polite"></p>
+                <button class="import-button" id="import-selected" type="button">Import selected</button>
+              </div>
+            </section>
+          </section>
+
+          <div class="preview-note" id="preview-note" hidden>
+            <span class="preview-icon" aria-hidden="true">✦</span>
+            <span>These are sample tasks to preview the list. Your changes are saved in this browser.</span>
+            <button class="text-button" id="clear-preview" type="button">Clear examples</button>
+          </div>
+
+          <div class="overdue-note" id="overdue-note" role="status" hidden></div>
+          <div class="task-list" id="task-list" aria-live="polite" aria-busy="false"></div>
+          <div class="empty-state" id="empty-state" hidden>
+            <div class="empty-art" aria-hidden="true"><span>✓</span></div>
+            <h3>A clear page is a good place to start.</h3>
+            <p>Your list is ready when you are. Add a task above to give yourself a clear next step.</p>
+            <button class="preview-button" id="show-preview" type="button">Preview example tasks</button>
+          </div>
+          <p class="local-note"><span aria-hidden="true">ⓘ</span> Completion is saved here only. Nothing is changed in Canvas.</p>
+        </section>
+
+        <footer class="page-footer">Made for steady progress <span aria-hidden="true">✳</span></footer>
+      </main>
+    </div>
+  </body>
+</html>
