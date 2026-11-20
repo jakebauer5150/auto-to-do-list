@@ -4,9 +4,10 @@
   const STORAGE_KEY = 'next-up.tasks.v1';
   const listElement = document.querySelector('#task-list');
   const emptyElement = document.querySelector('#empty-state');
-  const previewNote = document.querySelector('#preview-note');
   const overdueNote = document.querySelector('#overdue-note');
   const summaryElement = document.querySelector('#task-summary');
+  const recommendationList = document.querySelector('#recommendation-list');
+  const recommendationEmpty = document.querySelector('#recommendation-empty');
   const quickAddForm = document.querySelector('#quick-add-form');
   const formFeedback = document.querySelector('#form-feedback');
 
@@ -15,20 +16,6 @@
     date.setHours(12, 0, 0, 0);
     date.setDate(date.getDate() + days);
     return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
-  }
-
-  function createPreviewTasks() {
-    const createdAt = new Date().toISOString();
-    return [
-      { id: 'preview-overdue', title: 'Review notes from last week', dueDate: localDateOffset(-2), source: 'custom', courseName: null, estimatedMinutes: null, completed: false, createdAt },
-      { id: 'preview-today', title: 'Read the assigned chapter', dueDate: localDateOffset(0), source: 'canvas', courseName: 'Introduction to Psychology', estimatedMinutes: 30, completed: false, createdAt },
-      { id: 'preview-soon', title: 'Prepare questions for class', dueDate: localDateOffset(2), source: 'custom', courseName: null, estimatedMinutes: null, completed: true, createdAt },
-      { id: 'preview-undated', title: 'Organize study materials', dueDate: null, source: 'custom', courseName: null, estimatedMinutes: null, completed: false, createdAt }
-    ];
-  }
-
-  function isPreviewTask(task) {
-    return task.id.startsWith('preview-');
   }
 
   function isTask(value) {
@@ -51,18 +38,19 @@
     try {
       saved = localStorage.getItem(STORAGE_KEY);
     } catch (_) {
-      return { tasks: [], isPreview: false };
+      return { tasks: [] };
     }
     if (saved === null) {
-      return { tasks: [], isPreview: false };
+      return { tasks: [] };
     }
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || !parsed.every(isTask)) return { tasks: [], isPreview: false };
-      const isPreview = parsed.some(isPreviewTask);
-      return { tasks: parsed, isPreview };
+      if (!Array.isArray(parsed) || !parsed.every(isTask)) return { tasks: [] };
+      const tasks = parsed.filter((task) => !task.id.startsWith('preview-'));
+      if (tasks.length !== parsed.length) saveTasks(tasks);
+      return { tasks };
     } catch (_) {
-      return { tasks: [], isPreview: false };
+      return { tasks: [] };
     }
   }
 
@@ -326,9 +314,7 @@
     checkbox.checked = task.completed;
     checkbox.setAttribute('aria-label', `${task.completed ? 'Reopen' : 'Complete'}: ${task.title}`);
     checkbox.addEventListener('change', () => {
-      task.completed = checkbox.checked;
-      saveTasks(state.tasks);
-      render();
+      setTaskCompletion(task, checkbox.checked);
     });
 
     const main = document.createElement('div');
@@ -379,15 +365,85 @@
     return row;
   }
 
+  function setTaskCompletion(task, completed) {
+    task.completed = completed;
+    saveTasks(state.tasks);
+    render();
+  }
+
+  function makeRecommendationCard(task, index) {
+    const card = document.createElement('article');
+    card.className = 'recommendation-card';
+
+    const top = document.createElement('div');
+    top.className = 'recommendation-card-top';
+    const rank = document.createElement('span');
+    rank.className = 'recommendation-rank';
+    rank.textContent = String(index + 1).padStart(2, '0');
+    const due = document.createElement('span');
+    due.className = 'recommendation-due';
+    if (task.dueDate) {
+      const dueLabel = formatDueDate(task.dueDate);
+      due.textContent = dueLabel.label;
+      if (dueLabel.className) due.classList.add(dueLabel.className);
+    } else {
+      due.textContent = 'No due date';
+    }
+    top.append(rank, due);
+
+    const title = document.createElement('h4');
+    title.className = 'recommendation-title';
+    title.textContent = task.title;
+    const course = document.createElement('p');
+    course.className = 'recommendation-course';
+    course.textContent = task.courseName || (task.source === 'canvas' ? 'Canvas assignment' : 'Personal task');
+
+    const footer = document.createElement('div');
+    footer.className = 'recommendation-footer';
+    const source = document.createElement('span');
+    source.className = `recommendation-source${task.source === 'canvas' ? ' canvas' : ''}`;
+    source.textContent = task.source === 'canvas' ? 'CANVAS' : 'CUSTOM';
+    footer.append(source);
+    if (typeof task.estimatedMinutes === 'number') {
+      const estimate = document.createElement('span');
+      estimate.className = 'recommendation-duration';
+      estimate.textContent = `${task.estimatedMinutes} min`;
+      footer.append(estimate);
+    }
+
+    const complete = document.createElement('button');
+    complete.type = 'button';
+    complete.className = 'recommendation-complete';
+    complete.textContent = 'Mark done';
+    complete.setAttribute('aria-label', `Complete ${task.title}`);
+    complete.addEventListener('click', () => setTaskCompletion(task, true));
+
+    card.append(top, title, course, footer, complete);
+    return card;
+  }
+
+  function renderRecommendations() {
+    const recommendations = sortTasks(state.tasks).filter((task) => !task.completed).slice(0, 3);
+    recommendationList.replaceChildren(...recommendations.map(makeRecommendationCard));
+    recommendationList.hidden = recommendations.length === 0;
+    recommendationEmpty.hidden = recommendations.length > 0;
+    if (recommendations.length) {
+      recommendationEmpty.textContent = '';
+    } else if (state.tasks.length) {
+      recommendationEmpty.textContent = 'You’re all caught up. Reopen a completed task in the list when you’re ready to work on it again.';
+    } else {
+      recommendationEmpty.textContent = 'Add a custom task or import Canvas assignments to see your next priorities here.';
+    }
+  }
+
   function render() {
+    renderRecommendations();
     const sorted = sortTasks(state.tasks);
     listElement.replaceChildren(...sorted.map(makeTaskRow));
     const remaining = state.tasks.filter((task) => !task.completed).length;
     summaryElement.innerHTML = `<strong>${remaining}</strong> ${remaining === 1 ? 'task' : 'tasks'} to do`;
     emptyElement.hidden = state.tasks.length > 0;
     listElement.hidden = state.tasks.length === 0;
-    state.isPreview = state.tasks.some(isPreviewTask);
-    previewNote.hidden = !state.isPreview;
     const today = localDateOffset(0);
     const overdueCount = state.tasks.filter((task) => !task.completed && task.dueDate && task.dueDate < today).length;
     overdueNote.hidden = overdueCount === 0;
@@ -398,18 +454,6 @@
 
   const state = { ...loadTasks(), reviewItems: [] };
   document.querySelector('#today-date').textContent = formatToday(new Date());
-  document.querySelector('#clear-preview').addEventListener('click', () => {
-    state.tasks = state.tasks.filter((task) => !isPreviewTask(task));
-    state.isPreview = false;
-    saveTasks(state.tasks);
-    render();
-  });
-  document.querySelector('#show-preview').addEventListener('click', () => {
-    state.tasks = createPreviewTasks();
-    state.isPreview = true;
-    saveTasks(state.tasks);
-    render();
-  });
   quickAddForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const titleInput = document.querySelector('#task-title-input');
@@ -437,7 +481,6 @@
       createdAt: new Date().toISOString()
     };
     state.tasks.push(task);
-    state.isPreview = state.tasks.some(isPreviewTask);
     saveTasks(state.tasks);
     quickAddForm.reset();
     formFeedback.textContent = 'Task added and sorted by due date.';

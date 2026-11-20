@@ -99,8 +99,6 @@ h2 { margin-bottom: 0; font: 700 24px 'Manrope', sans-serif; letter-spacing: -.7
 .duplicate-badge { display: inline-block; margin-top: 4px; padding: 2px 5px; border-radius: 4px; background: #fff0e4; color: #aa704d; font-size: 8px; font-weight: 700; }
 .review-actions { margin-top: 11px; padding-top: 10px; border-top: 1px solid #edf0f5; }
 .review-feedback { flex: 1; color: #a66c4a; }
-.preview-note { display: flex; align-items: center; gap: 9px; margin: 0 0 16px; padding: 11px 13px; border: 1px solid #e7eafe; border-radius: 10px; background: #f8f9ff; color: #707c9b; font-size: 11px; line-height: 1.5; }
-.preview-icon { color: var(--blue); font-size: 14px; }
 .text-button { flex: 0 0 auto; margin-left: auto; padding: 4px 0 4px 8px; border: 0; background: transparent; color: #596ed1; font-size: 11px; font-weight: 700; cursor: pointer; }
 .text-button:hover { color: #344ebc; text-decoration: underline; }
 .task-list { display: grid; gap: 9px; }
@@ -125,6 +123,27 @@ h2 { margin-bottom: 0; font: 700 24px 'Manrope', sans-serif; letter-spacing: -.7
 .due-label.is-completed { background: var(--green-pale); color: var(--green); }
 .overdue-note { margin: 0 0 12px; padding: 10px 12px; border: 1px solid #f3e4d8; border-radius: 9px; background: #fffaf5; color: #a66c4a; font-size: 11px; line-height: 1.5; }
 .overdue-note strong { color: #8e5635; }
+.recommendation-panel { margin: 0 0 18px; padding: 17px; border: 1px solid #e6eaf7; border-radius: 12px; background: linear-gradient(140deg, #fafbff, #f6f8ff); }
+.recommendation-header { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 13px; }
+.recommendation-header .eyebrow { margin-bottom: 5px; }
+.recommendation-header h3 { margin: 0; font: 700 15px 'Manrope', sans-serif; }
+.recommendation-caption { padding-bottom: 2px; color: #949db0; font-size: 9px; }
+.recommendation-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.recommendation-card { min-width: 0; display: flex; flex-direction: column; align-items: stretch; padding: 12px; border: 1px solid #e6eaf5; border-radius: 9px; background: white; }
+.recommendation-card-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
+.recommendation-rank { display: grid; width: 21px; height: 21px; place-items: center; border-radius: 7px; background: #eef1ff; color: #5b6fd1; font: 700 10px 'Manrope', sans-serif; }
+.recommendation-due { overflow: hidden; padding: 5px 7px; border-radius: 6px; background: #f3f5f8; color: #6e7a8f; font-size: 9px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.recommendation-due.is-overdue { background: var(--amber-pale); color: var(--amber); }
+.recommendation-due.is-today { background: var(--blue-pale); color: #5068d5; }
+.recommendation-title { display: -webkit-box; min-height: 36px; overflow: hidden; margin: 0 0 7px; color: #303b4d; font-size: 11px; font-weight: 700; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.recommendation-course { overflow: hidden; margin: 0 0 11px; color: #929cad; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.recommendation-footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: auto; }
+.recommendation-source { padding: 3px 6px; border-radius: 4px; background: #f1f3f7; color: #778195; font-size: 8px; font-weight: 700; }
+.recommendation-source.canvas { background: #fff1e8; color: #b87348; }
+.recommendation-duration { margin-left: auto; color: #939cad; font-size: 9px; }
+.recommendation-complete { align-self: end; min-height: 29px; margin-top: 10px; padding: 0 9px; border: 1px solid #dfe5f3; border-radius: 7px; background: #fff; color: #5d6eb9; font-size: 9px; font-weight: 700; cursor: pointer; }
+.recommendation-complete:hover { border-color: #9caae7; background: #f8f9ff; }
+.recommendation-empty { padding: 15px 13px; border: 1px dashed #dce2f0; border-radius: 8px; color: #858fa2; font-size: 10px; line-height: 1.6; }
 .is-completed .task-title { color: #9aa3b0; text-decoration: line-through; text-decoration-color: #b9c0ca; }
 .is-completed .task-detail { opacity: .7; }
 .empty-state { padding: 40px 22px 36px; text-align: center; }
@@ -132,8 +151,6 @@ h2 { margin-bottom: 0; font: 700 24px 'Manrope', sans-serif; letter-spacing: -.7
 .empty-art span { transform: rotate(5deg); }
 .empty-state h3 { margin-bottom: 8px; font: 700 16px 'Manrope', sans-serif; }
 .empty-state p { max-width: 380px; margin: 0 auto; color: var(--muted); font-size: 12px; line-height: 1.7; }
-.preview-button { margin-top: 17px; padding: 9px 13px; border: 1px solid #dfe4fb; border-radius: 8px; background: #f7f8ff; color: #596ed1; font-size: 11px; font-weight: 700; cursor: pointer; }
-.preview-button:hover { background: var(--blue-pale); }
 .local-note { margin: 17px 0 0; color: #99a2af; font-size: 10px; }
 .local-note span { margin-right: 4px; color: #8591a4; }
 .page-footer { display: flex; justify-content: center; gap: 7px; padding: 24px 0 0; color: #aab1bf; font-size: 10px; }
@@ -154,10 +171,10 @@ h2 { margin-bottom: 0; font: 700 24px 'Manrope', sans-serif; letter-spacing: -.7
   .add-button { grid-column: 2; justify-self: end; min-width: 125px; }
   .review-fields { grid-template-columns: minmax(0, 1.3fr) minmax(100px, 1fr); }
   .review-date-field { grid-column: 1 / -1; }
+  .recommendation-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .task-row { grid-template-columns: 20px minmax(0, 1fr) auto; gap: 11px; padding: 12px 10px; }
   .task-date { min-width: auto; }
   .due-label { padding: 6px 7px; font-size: 9px; }
-  .preview-note { align-items: flex-start; }
   .text-button { align-self: center; }
 }
 @media (max-width: 480px) {
@@ -186,8 +203,10 @@ h2 { margin-bottom: 0; font: 700 24px 'Manrope', sans-serif; letter-spacing: -.7
   .review-date-field { grid-column: auto; }
   .review-actions { align-items: end; }
   .import-button { padding: 0 9px; }
-  .preview-note { flex-wrap: wrap; }
-  .preview-note > span:nth-child(2) { flex: 1; }
+  .recommendation-panel { padding: 14px 11px; }
+  .recommendation-list { grid-template-columns: minmax(0, 1fr); }
+  .recommendation-card { padding: 10px; }
+  .recommendation-title { min-height: auto; }
   .text-button { margin: 0 0 0 23px; padding-left: 0; }
   .task-row { grid-template-columns: 19px minmax(0, 1fr); gap: 10px; }
   .task-date { grid-column: 2; justify-self: start; margin-top: 2px; }
